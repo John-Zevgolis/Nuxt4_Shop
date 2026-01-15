@@ -20,6 +20,9 @@ export default defineEventHandler(
       const cartProducts = await prisma.cartItem.findMany({
         where: {
           userId: user.id,
+          product: {
+            isDeleted: false,
+          },
         },
         include: {
           product: true,
@@ -27,9 +30,11 @@ export default defineEventHandler(
       });
 
       return cartProducts.map((item) => {
+        const price = item.product?.price || 0;
+
         return {
           ...item,
-          totalPrice: item.quantity * item.product.price,
+          totalPrice: item.quantity * price,
         };
       });
     } catch (error: any) {

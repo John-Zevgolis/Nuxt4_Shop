@@ -3,6 +3,7 @@ import { Order, OrderItem, Product } from '@prisma/client';
 interface OrderItemWithProducts extends OrderItem {
   product: Product;
   totalPrice: number;
+  createdAt: Date;
 }
 
 interface OrderResponse extends Order {
@@ -42,7 +43,7 @@ export default defineEventHandler(async (event): Promise<OrderResponse[]> => {
         items: order.items.map((item) => {
           return {
             ...item,
-            totalPrice: item.quantity * item.product.price,
+            totalPrice: item.quantity * item.price,
           };
         }),
       };

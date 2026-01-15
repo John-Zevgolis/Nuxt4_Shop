@@ -10,11 +10,13 @@
         :key="product.id"
         class="bg-neutral-primary-soft block border border-default rounded-base shadow-xs"
       >
-        <img
-          class="rounded-base"
-          :src="product.imageUrl"
-          :alt="product.title"
-        />
+        <div class="aspect-video">
+          <img
+            class="w-full h-full object-cover"
+            :src="product.imageUrl"
+            :alt="product.title"
+          />
+        </div>
         <div class="p-6">
           <h5 class="mb-2 text-2xl font-semibold tracking-tight text-heading">
             {{ product.title }}

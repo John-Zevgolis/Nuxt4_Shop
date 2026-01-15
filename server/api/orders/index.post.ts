@@ -20,6 +20,16 @@ export default defineEventHandler(async (event): Promise<Order> => {
       throw createError({ statusCode: 400, message: 'Cart is empty' });
     }
 
+    const hasDeletedProducts = cartItems.some((item) => item.product.isDeleted);
+
+    if (hasDeletedProducts) {
+      throw createError({
+        statusCode: 400,
+        message:
+          'Some products in your cart are no longer available. Please update your cart.',
+      });
+    }
+
     const totalAmount = cartItems.reduce((acc, item) => {
       return acc + item.quantity * item.product.price;
     }, 0);

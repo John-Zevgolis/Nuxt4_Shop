@@ -41,6 +41,7 @@ model User {
 model Order {
   id     Int @id @default(autoincrement())
   totalAmount Float
+  createdAt   DateTime    @default(now())
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   items  OrderItem[]

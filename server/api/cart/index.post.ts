@@ -16,6 +16,20 @@ export default defineEventHandler(async (event): Promise<CartItemResponse> => {
     });
   }
 
+  const product = await prisma.product.findFirst({
+    where: {
+      id: Number(productId),
+      isDeleted: false,
+    },
+  });
+
+  if (!product) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'This product is no longer available.',
+    });
+  }
+
   const existing = await prisma.cartItem.findFirst({
     where: {
       productId: Number(productId),

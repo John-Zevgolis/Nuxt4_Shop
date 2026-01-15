@@ -5,6 +5,7 @@
         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
           <!-- Mobile menu button-->
           <button
+            @click="showMenu = !showMenu"
             type="button"
             command="--toggle"
             commandfor="mobile-menu"
@@ -13,6 +14,7 @@
             <span class="absolute -inset-0.5"></span>
             <span class="sr-only">Open main menu</span>
             <svg
+              v-show="!showMenu"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -28,6 +30,7 @@
               />
             </svg>
             <svg
+              v-show="showMenu"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -47,15 +50,8 @@
         <div
           class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"
         >
-          <div class="flex shrink-0 items-center">
-            <img
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Your Company"
-              class="h-8 w-auto"
-            />
-          </div>
-          <div class="hidden sm:ml-6 sm:grow sm:flex sm:justify-between">
-            <div class="flex space-x-4">
+          <div class="ml-auto sm:ml-0 sm:grow sm:flex sm:justify-between">
+            <div class="hidden sm:flex space-x-4">
               <NuxtLink
                 to="/"
                 class="rounded-md nav-item px-3 py-2 text-sm font-medium"
@@ -96,14 +92,49 @@
               <template v-if="!loggedIn">
                 <NuxtLink
                   to="/login"
-                  class="rounded-md nav-item px-3 py-2 text-sm font-medium"
-                  >Login</NuxtLink
-                >
+                  class="rounded-md nav-item sm:px-3 sm:py-2 text-sm font-medium"
+                  ><span class="hidden sm:block">Login</span>
+                  <span
+                    class="block sm:hidden relative inline-flex items-center p-2 justify-center rounded-md text-gray-400 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                      />
+                    </svg>
+                  </span>
+                </NuxtLink>
                 <NuxtLink
                   to="/signup"
-                  class="rounded-md nav-item px-3 py-2 text-sm font-medium"
-                  >Signup</NuxtLink
-                >
+                  class="rounded-md nav-item sm:px-3 sm:py-2 text-sm font-medium"
+                  ><span class="hidden sm:block">Signup</span>
+                  <span
+                    class="block sm:hidden relative inline-flex items-center p-2 justify-center rounded-md text-gray-400 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-5 h-5"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                      />
+                    </svg> </span
+                ></NuxtLink>
               </template>
 
               <button
@@ -111,7 +142,25 @@
                 @click="logout"
                 class="rounded-md nav-item px-3 py-2 text-sm font-medium"
               >
-                Logout
+                <span class="hidden sm:block">Logout</span>
+                <span
+                  class="block sm:hidden relative inline-flex items-center p-2 justify-center rounded-md text-gray-400 hover:text-white focus:outline-2 focus:-outline-offset-1 focus:outline-indigo-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-5 w-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"
+                    />
+                  </svg>
+                </span>
               </button>
             </div>
           </div>
@@ -119,7 +168,7 @@
       </div>
     </div>
 
-    <div id="mobile-menu" hidden class="block sm:hidden">
+    <div id="mobile-menu" v-show="showMenu" class="sm:hidden">
       <div class="space-y-1 px-2 pt-2 pb-3">
         <NuxtLink
           to="/"
@@ -162,6 +211,8 @@
 const route = useRoute();
 
 const loading = ref(false);
+
+const showMenu = ref(false);
 
 const { loggedIn, clear } = useUserSession();
 

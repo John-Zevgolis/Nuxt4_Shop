@@ -7,7 +7,7 @@ export default defineEventHandler(async (event): Promise<CartItem> => {
   if (!id || isNaN(Number(id)) || Number(id) <= 0) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Product ID is required',
+      statusMessage: 'Cart Item ID is required',
     });
   }
 

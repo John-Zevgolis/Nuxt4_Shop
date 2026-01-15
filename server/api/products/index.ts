@@ -11,18 +11,25 @@ export default defineEventHandler(
     const { page } = getQuery(event);
 
     const currentPage = Number(page) || 1;
-    const pageSize = 8;
+    const pageSize = 6;
 
     try {
       const [products, totalCount] = await Promise.all([
         prisma.product.findMany({
           skip: (currentPage - 1) * pageSize,
           take: pageSize,
+          where: {
+            isDeleted: false,
+          },
           orderBy: {
             id: 'desc',
           },
         }),
-        prisma.product.count(),
+        prisma.product.count({
+          where: {
+            isDeleted: false,
+          },
+        }),
       ]);
 
       return {

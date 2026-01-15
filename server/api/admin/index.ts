@@ -16,6 +16,9 @@ export default defineEventHandler(async (event): Promise<Product[]> => {
         userId: user.id,
         isDeleted: false,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
 
     return products;

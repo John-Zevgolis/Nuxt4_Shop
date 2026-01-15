@@ -8,13 +8,15 @@
           :key="product.id"
           class="bg-neutral-primary-soft block border border-default rounded-base shadow-xs"
         >
-          <NuxtLink :to="`/products/${product.id}`">
-            <img
-              class="rounded-base"
-              :src="product.imageUrl"
-              :alt="product.title"
-            />
-          </NuxtLink>
+          <div class="aspect-video">
+            <NuxtLink class="" :to="`/products/${product.id}`">
+              <img
+                class="w-full h-full object-cover"
+                :src="product.imageUrl"
+                :alt="product.title"
+              />
+            </NuxtLink>
+          </div>
           <div class="p-6">
             <NuxtLink :to="`/products/${product.id}`">
               <h5
@@ -83,7 +85,7 @@
       </div>
       <div
         v-if="data.totalPages > 1"
-        class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+        class="flex items-center justify-between bg-white px-4 py-3 sm:px-6"
       >
         <div class="flex flex-1 justify-between sm:hidden">
           <button
@@ -101,9 +103,7 @@
             Next
           </button>
         </div>
-        <div
-          class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between"
-        >
+        <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-center">
           <div>
             <nav
               aria-label="Pagination"
@@ -112,7 +112,7 @@
               <button
                 :disabled="page === 1"
                 @click="prevPage"
-                class="disabled:opacity-50 relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 inset-ring inset-ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                class="disabled:opacity-50 relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-800 inset-ring inset-ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span class="sr-only">Previous</span>
                 <svg
@@ -131,13 +131,13 @@
               </button>
               <span
                 aria-current="page"
-                class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                class="relative z-10 inline-flex items-center bg-gray-800 px-4 py-2 text-sm font-medium text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2"
                 >Page {{ page }} from {{ data.totalPages }}</span
               >
               <button
                 :disabled="page === data.totalPages"
                 @click="nextPage"
-                class="disabled:opacity-50 relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 inset-ring inset-ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                class="disabled:opacity-50 relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-800 inset-ring inset-ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
               >
                 <span class="sr-only">Next</span>
                 <svg

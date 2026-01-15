@@ -4,9 +4,10 @@ export default defineEventHandler(async (event): Promise<Product | null> => {
   const id = getRouterParam(event, 'id');
 
   try {
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.findFirst({
       where: {
         id: Number(id),
+        isDeleted: false,
       },
     });
 
