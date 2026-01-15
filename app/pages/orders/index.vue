@@ -9,7 +9,7 @@
             v-for="order in orders"
             :key="order.id"
           >
-            <div class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
+            <div class="w-1/3 lg:w-auto lg:flex-1">
               <div
                 class="text-base font-medium text-gray-500 dark:text-gray-400"
               >
@@ -22,7 +22,7 @@
               </dd>
             </div>
 
-            <div class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
+            <div class="w-1/3 lg:w-auto lg:flex-1">
               <dt
                 class="text-base font-medium text-gray-500 dark:text-gray-400"
               >
@@ -35,7 +35,7 @@
               </dd>
             </div>
 
-            <div class="w-1/2 sm:w-1/4 lg:w-auto lg:flex-1">
+            <div class="w-1/3 lg:w-auto lg:flex-1">
               <dt
                 class="text-base font-medium text-gray-500 dark:text-gray-400"
               >
