@@ -17,6 +17,7 @@ model Product {
   items       OrderItem[]
   userId      Int
   user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isDeleted   Boolean @default(false)
 }
 
 model CartItem {

@@ -14,6 +14,7 @@ export default defineEventHandler(async (event): Promise<Product[]> => {
     const products = await prisma.product.findMany({
       where: {
         userId: user.id,
+        isDeleted: false,
       },
     });
 

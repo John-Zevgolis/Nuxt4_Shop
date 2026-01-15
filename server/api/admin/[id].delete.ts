@@ -1,4 +1,5 @@
 import { Product } from '@prisma/client';
+import { v2 as cloudinary } from 'cloudinary';
 
 export default defineEventHandler(
   async (event): Promise<{ message: string }> => {
@@ -46,26 +47,48 @@ export default defineEventHandler(
     });
 
     if (isInOrder) {
-      throw createError({
-        statusCode: 400,
-        statusMessage:
-          'This product cannot be deleted because it is linked to existing orders.',
-      });
-    }
+      try {
+        await prisma.product.update({
+          where: {
+            id: Number(id),
+          },
+          data: {
+            isDeleted: true,
+          },
+        });
 
-    try {
-      const product = await prisma.product.delete({
-        where: {
-          id: Number(id),
-        },
-      });
+        return {
+          message: 'Product marked as deleted to preserve order history',
+        };
+      } catch (error: any) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: error.message,
+        });
+      }
+    } else {
+      try {
+        const urlParts = existing.imageUrl.split('/');
+        const fileNameWithExtension = urlParts.pop() || '';
+        const fileName = fileNameWithExtension.split('.')[0];
 
-      return { message: 'Product deleted successfully!' };
-    } catch (error: any) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: error.message,
-      });
+        const publicId = `shop/${fileName}`;
+
+        await cloudinary.uploader.destroy(publicId);
+
+        await prisma.product.delete({
+          where: {
+            id: Number(id),
+          },
+        });
+
+        return { message: 'Product deleted successfully!' };
+      } catch (error: any) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: error.message,
+        });
+      }
     }
   }
 );

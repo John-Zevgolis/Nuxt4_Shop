@@ -16,6 +16,7 @@ export default defineEventHandler(async (event): Promise<Product | null> => {
       where: {
         id: Number(id),
         userId: user.id,
+        isDeleted: false,
       },
     });
 
