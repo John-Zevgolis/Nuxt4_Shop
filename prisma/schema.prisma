@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int @id @default(autoincrement())
+  title       String
+  price       Float
+  imageUrl    String
+  description String
+  cartItems   CartItem[]
+  items       OrderItem[]
+  userId      Int
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CartItem {
+  id        Int @id @default(autoincrement())
+  quantity  Int
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        Int @id @default(autoincrement())
+  email     String @unique
+  password  String
+  products  Product[]
+  cartItems CartItem[]
+  orders    Order[]
+}
+
+model Order {
+  id     Int @id @default(autoincrement())
+  totalAmount Float
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items  OrderItem[]
+}
+
+model OrderItem {
+  id        Int @id @default(autoincrement())
+  quantity  Int
+  price     Float
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  orderId   Int
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
