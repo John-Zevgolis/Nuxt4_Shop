@@ -2,7 +2,11 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['~/assets/css/main.scss'],
+  fonts: {
+    families: [
+      { name: 'Roboto', provider: 'google', weights: [300, 400, 500, 700] },
+    ],
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/fonts',
