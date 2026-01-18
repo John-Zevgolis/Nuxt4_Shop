@@ -7,7 +7,6 @@ import {
   timestamp,
   text,
 } from 'drizzle-orm/mysql-core';
-import { sql } from 'drizzle-orm';
 
 export const users = mysqlTable('User', {
   id: int('id').primaryKey().autoincrement(),
