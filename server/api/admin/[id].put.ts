@@ -1,5 +1,6 @@
-import { Product } from '@prisma/client';
+import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { products } from '~~/db/schema';
 import { uploadToCloudinary } from '~~/server/utils/cloudinary';
 
 const productSchema = z.object({
@@ -52,16 +53,14 @@ export default defineEventHandler(
       });
     }
 
-    const existing = await prisma.product.findUnique({
-      where: { id: Number(id) },
-    });
+    const [existing] = await db
+      .select()
+      .from(products)
+      .where(and(eq(products.id, Number(id)), eq(products.userId, user.id)))
+      .limit(1);
 
     if (!existing) {
       throw createError({ statusCode: 404, message: 'Product not found' });
-    }
-
-    if (existing.userId !== user.id) {
-      throw createError({ statusCode: 403, message: 'Forbidden' });
     }
 
     try {
@@ -70,15 +69,15 @@ export default defineEventHandler(
         imageUrl = await uploadToCloudinary(file);
       }
 
-      const product = await prisma.product.update({
-        where: { id: Number(id) },
-        data: {
+      await db
+        .update(products)
+        .set({
           title: result.data.title,
-          price: result.data.price,
+          price: String(result.data.price),
           description: result.data.description,
-          imageUrl: imageUrl,
-        },
-      });
+          imageUrl,
+        })
+        .where(and(eq(products.id, Number(id)), eq(products.userId, user.id)));
 
       return { message: 'Product updated successfully!' };
     } catch (error: any) {
@@ -87,5 +86,5 @@ export default defineEventHandler(
         statusMessage: error.message,
       });
     }
-  }
+  },
 );

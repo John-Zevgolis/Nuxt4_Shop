@@ -1,7 +1,6 @@
-import { Product } from '@prisma/client';
 import { z } from 'zod';
-import { v2 as cloudinary } from 'cloudinary';
 import { uploadToCloudinary } from '~~/server/utils/cloudinary';
+import { products } from '~~/db/schema';
 
 const productSchema = z.object({
   title: z.string().trim().min(3, 'Title must be at least 3 characters long'),
@@ -62,14 +61,12 @@ export default defineEventHandler(
     try {
       const imageUrl = await uploadToCloudinary(file);
 
-      const product = await prisma.product.create({
-        data: {
-          title: result.data.title,
-          price: result.data.price,
-          description: result.data.description,
-          imageUrl,
-          userId: user.id,
-        },
+      await db.insert(products).values({
+        title: result.data.title,
+        price: String(result.data.price),
+        description: result.data.description,
+        imageUrl,
+        userId: user.id,
       });
 
       return { message: 'Product created successfully!' };
@@ -79,5 +76,5 @@ export default defineEventHandler(
         statusMessage: error.message,
       });
     }
-  }
+  },
 );

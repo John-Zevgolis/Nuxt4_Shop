@@ -12,10 +12,12 @@
   "dependencies": {
     "@nuxt/fonts": "^0.12.1",
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "@prisma/client": "6.1.0",
+    "@tidbcloud/serverless": "^0.2.0",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
+    "drizzle-orm": "^0.45.1",
     "izitoast": "^1.4.0",
+    "mysql2": "^3.16.1",
     "nuxt": "^4.2.2",
     "nuxt-auth-utils": "^0.5.26",
     "nuxt-csurf": "^1.6.5",
@@ -27,7 +29,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^25.0.3",
-    "prisma": "6.1.0",
+    "drizzle-kit": "^0.31.8",
     "sass-embedded": "^1.97.2"
   }
 }

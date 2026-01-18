@@ -1,16 +1,9 @@
-import { Order, OrderItem, Product } from '@prisma/client';
+import { orders } from '~~/db/schema';
+import { desc, eq, InferSelectModel } from 'drizzle-orm';
 
-interface OrderItemWithProducts extends OrderItem {
-  product: Product;
-  totalPrice: number;
-  createdAt: Date;
-}
+type Order = InferSelectModel<typeof orders>;
 
-interface OrderResponse extends Order {
-  items: OrderItemWithProducts[];
-}
-
-export default defineEventHandler(async (event): Promise<OrderResponse[]> => {
+export default defineEventHandler(async (event): Promise<Order[]> => {
   const { user } = await getUserSession(event);
 
   if (!user) {
@@ -21,33 +14,7 @@ export default defineEventHandler(async (event): Promise<OrderResponse[]> => {
   }
 
   try {
-    const orders = await prisma.order.findMany({
-      where: {
-        userId: user.id,
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-      },
-      orderBy: {
-        id: 'desc',
-      },
-    });
-
-    return orders.map((order) => {
-      return {
-        ...order,
-        items: order.items.map((item) => {
-          return {
-            ...item,
-            totalPrice: item.quantity * item.price,
-          };
-        }),
-      };
-    });
+    return await db.select().from(orders).orderBy(desc(orders.id));
   } catch (error: any) {
     throw createError({
       statusCode: 500,

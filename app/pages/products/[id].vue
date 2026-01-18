@@ -18,7 +18,7 @@
           {{ product.title }}
         </h5>
         <h4 class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading">
-          {{ product.price }}
+          {{ formatPrice(product.price) }}
         </h4>
         <p class="mb-6 text-body">
           {{ product.description }}
@@ -54,7 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@prisma/client';
+import type { Product } from '~/types/product';
+
 const { params } = useRoute();
 
 const { csrf } = useCsrf();
@@ -73,6 +74,11 @@ const {
   key: `product-${params.id}`,
 });
 
+useSeoMeta({
+  title: () => product.value?.title,
+  description: () => product.value?.description,
+});
+
 const addToCart = async () => {
   if (loading.value) return;
 
@@ -82,7 +88,7 @@ const addToCart = async () => {
     await $fetch('/api/cart', {
       method: 'POST',
       body: {
-        productId: params.id,
+        productId: Number(params.id),
       },
       headers: {
         'csrf-token': csrf,

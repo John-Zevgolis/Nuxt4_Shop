@@ -18,7 +18,7 @@
               <dd
                 class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white"
               >
-                <a href="#" class="hover:underline">#{{ order.id }}</a>
+                <span class="hover:underline">#{{ order.id }}</span>
               </dd>
             </div>
 
@@ -44,7 +44,7 @@
               <dd
                 class="mt-1.5 text-base font-semibold text-gray-900 dark:text-white"
               >
-                ${{ order.totalAmount }}
+                {{ formatPrice(order.totalAmount) }}
               </dd>
             </div>
           </div>
@@ -58,25 +58,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Order, OrderItem, Product } from '@prisma/client';
+import type { Order } from '~/types/order';
 
 definePageMeta({
   middleware: ['auth'],
 });
 
-interface OrderItemWithProducts extends OrderItem {
-  product: Product;
-  totalPrice: number;
-  createdAt: Date;
-}
-
-interface OrderResponse extends Order {
-  items: OrderItemWithProducts[];
-}
-
-const {
-  data: orders,
-  error,
-  pending,
-} = await useFetch<OrderResponse[]>('/api/orders');
+const { data: orders, error, pending } = await useFetch<Order[]>('/api/orders');
 </script>

@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { users } from '~~/db/schema';
 
 const signupSchema = z
   .object({
@@ -39,11 +41,11 @@ export default defineEventHandler(
 
     const { email, password } = result.data;
 
-    const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const [existingUser] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
     if (existingUser) {
       throw createError({
@@ -54,20 +56,18 @@ export default defineEventHandler(
 
     const hasedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await prisma.user.create({
-      data: {
-        email,
-        password: hasedPassword,
-      },
+    const [newUser] = await db.insert(users).values({
+      email,
+      password: hasedPassword,
     });
 
     await setUserSession(event, {
       user: {
-        id: newUser.id,
-        email: newUser.email,
+        id: newUser.insertId,
+        email,
       },
     });
 
     return { message: 'User created and logged in successfully!' };
-  }
+  },
 );

@@ -24,7 +24,7 @@
           <h4
             class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading"
           >
-            {{ product.price }}
+            {{ formatPrice(product.price) }}
           </h4>
           <p class="mb-6 text-body">
             {{ product.description }}
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@prisma/client';
+import type { Product } from '~/types/product';
 
 definePageMeta({
   middleware: ['auth'],
@@ -90,6 +90,8 @@ definePageMeta({
 const loading = ref(false);
 
 const toast = useToast();
+
+const { csrf } = useCsrf();
 
 const {
   data: products,
@@ -105,7 +107,10 @@ const deleteProduct = async (id: number) => {
 
   try {
     const { message } = await $fetch<{ message: string }>(`/api/admin/${id}`, {
-      method: 'DELETE' as any,
+      method: 'DELETE',
+      headers: {
+        'csrf-token': csrf,
+      },
     });
 
     await refresh();

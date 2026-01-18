@@ -1,5 +1,6 @@
-import { Product } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
+import { and, eq } from 'drizzle-orm';
+import { orderItems, products } from '~~/db/schema';
 
 export default defineEventHandler(
   async (event): Promise<{ message: string }> => {
@@ -20,11 +21,10 @@ export default defineEventHandler(
       });
     }
 
-    const existing = await prisma.product.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+    const [existing] = await db
+      .select()
+      .from(products)
+      .where(and(eq(products.id, Number(id)), eq(products.userId, user.id)));
 
     if (!existing) {
       throw createError({
@@ -33,29 +33,20 @@ export default defineEventHandler(
       });
     }
 
-    if (existing.userId !== user.id) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'You are not authorized to delete this product.',
-      });
-    }
-
-    const isInOrder = await prisma.orderItem.findFirst({
-      where: {
-        productId: Number(id),
-      },
-    });
+    const [isInOrder] = await db
+      .select()
+      .from(orderItems)
+      .where(eq(orderItems.productId, Number(id)))
+      .limit(1);
 
     if (isInOrder) {
       try {
-        await prisma.product.update({
-          where: {
-            id: Number(id),
-          },
-          data: {
+        await db
+          .update(products)
+          .set({
             isDeleted: true,
-          },
-        });
+          })
+          .where(eq(products.id, Number(id)));
 
         return {
           message: 'Product marked as deleted to preserve order history',
@@ -76,11 +67,7 @@ export default defineEventHandler(
 
         await cloudinary.uploader.destroy(publicId);
 
-        await prisma.product.delete({
-          where: {
-            id: Number(id),
-          },
-        });
+        await db.delete(products).where(eq(products.id, Number(id)));
 
         return { message: 'Product deleted successfully!' };
       } catch (error: any) {
@@ -90,5 +77,5 @@ export default defineEventHandler(
         });
       }
     }
-  }
+  },
 );

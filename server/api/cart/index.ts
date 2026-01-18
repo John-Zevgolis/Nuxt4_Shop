@@ -1,4 +1,5 @@
-import { CartItem, Product } from '@prisma/client';
+import { products, cartItems } from '~~/db/schema';
+import { and, eq } from 'drizzle-orm';
 
 interface CartItemResponse extends CartItem {
   product: Product;
@@ -17,20 +18,22 @@ export default defineEventHandler(
     }
 
     try {
-      const cartProducts = await prisma.cartItem.findMany({
-        where: {
-          userId: user.id,
-          product: {
-            isDeleted: false,
-          },
-        },
-        include: {
-          product: true,
-        },
-      });
+      const cartProducts = await db
+        .select({
+          id: cartItems.id,
+          productId: cartItems.productId,
+          userId: cartItems.userId,
+          quantity: cartItems.quantity,
+          product: products,
+        })
+        .from(cartItems)
+        .innerJoin(products, eq(cartItems.productId, products.id))
+        .where(
+          and(eq(products.isDeleted, false), eq(cartItems.userId, user.id)),
+        );
 
       return cartProducts.map((item) => {
-        const price = item.product?.price || 0;
+        const price = Number(item.product?.price) || 0;
 
         return {
           ...item,
@@ -43,5 +46,5 @@ export default defineEventHandler(
         statusMessage: error.message,
       });
     }
-  }
+  },
 );

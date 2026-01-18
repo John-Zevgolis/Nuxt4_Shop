@@ -1,5 +1,7 @@
 import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
+import { users } from '~~/db/schema';
 
 const loginSchema = z.object({
   email: z
@@ -33,11 +35,11 @@ export default defineEventHandler(
 
     const { email, password } = result.data;
 
-    const user = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
 
     if (!user) {
       throw createError({
@@ -63,5 +65,5 @@ export default defineEventHandler(
     });
 
     return { message: 'Logged in successfully!' };
-  }
+  },
 );

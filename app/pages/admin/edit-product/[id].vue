@@ -162,6 +162,11 @@ const {
   key: `product-${params.id}`,
 });
 
+useSeoMeta({
+  title: () => product.value?.title,
+  description: () => product.value?.description,
+});
+
 const formErrors = ref<Record<string, string>>({});
 
 const editProduct = async () => {
@@ -185,12 +190,12 @@ const editProduct = async () => {
     const { message } = await $fetch<{ message: string }>(
       `/api/admin/${params.id}`,
       {
-        method: 'PUT' as any,
+        method: 'PUT',
         body: formData,
         headers: {
           'csrf-token': csrf,
         },
-      }
+      },
     );
 
     toast.success({

@@ -1,4 +1,7 @@
-import { Product } from '@prisma/client';
+import { desc, eq, and, InferSelectModel } from 'drizzle-orm';
+import { products } from '~~/db/schema';
+
+type Product = InferSelectModel<typeof products>;
 
 export default defineEventHandler(async (event): Promise<Product[]> => {
   const { user } = await getUserSession(event);
@@ -11,17 +14,11 @@ export default defineEventHandler(async (event): Promise<Product[]> => {
   }
 
   try {
-    const products = await prisma.product.findMany({
-      where: {
-        userId: user.id,
-        isDeleted: false,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-    });
-
-    return products;
+    return await db
+      .select()
+      .from(products)
+      .where(and(eq(products.userId, user.id), eq(products.isDeleted, false)))
+      .orderBy(desc(products.id));
   } catch (error: any) {
     throw createError({
       statusCode: 500,

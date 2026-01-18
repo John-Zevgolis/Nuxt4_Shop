@@ -32,7 +32,9 @@
                       <h3>
                         {{ cartProduct.product.title }}
                       </h3>
-                      <p class="ml-4">${{ cartProduct.totalPrice }}</p>
+                      <p class="ml-4">
+                        {{ formatPrice(cartProduct.totalPrice) }}
+                      </p>
                     </div>
                   </div>
                   <div class="flex flex-1 items-end justify-between text-sm">
@@ -58,7 +60,7 @@
       <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
         <div class="flex justify-between text-base font-medium text-gray-900">
           <p>Subtotal</p>
-          <p v-if="totalPrice">${{ totalPrice.toFixed(2) }}</p>
+          <p v-if="totalPrice">{{ formatPrice(totalPrice) }}</p>
         </div>
         <p class="mt-0.5 text-sm text-gray-500">
           Shipping and taxes calculated at checkout.
@@ -82,7 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import type { CartItem, Product } from '@prisma/client';
+import type { Product } from '~/types/product';
+import type { CartItem } from '~/types/cart-item';
 
 const { csrf } = useCsrf();
 
@@ -99,12 +102,6 @@ const loading = ref(false);
 
 const toast = useToast();
 
-const totalPrice = computed(() => {
-  return cartProducts.value?.reduce((acc, item) => {
-    return acc + item.totalPrice;
-  }, 0);
-});
-
 const {
   data: cartProducts,
   error,
@@ -112,17 +109,28 @@ const {
   refresh,
 } = await useFetch<CartItemResponse[]>('/api/cart');
 
+const totalPrice = computed(() => {
+  return cartProducts.value?.reduce((acc, item) => {
+    return acc + Number(item.totalPrice);
+  }, 0);
+});
+
 const deleteProduct = async (id: number) => {
   if (loading.value) return;
 
   loading.value = true;
 
   try {
-    await $fetch(`/api/cart/${id}`, {
+    const { message } = await $fetch<{ message: string }>(`/api/cart/${id}`, {
       method: 'DELETE',
       headers: {
         'csrf-token': csrf,
       },
+    });
+
+    toast.success({
+      title: 'Success!',
+      message,
     });
 
     await refresh();
@@ -142,11 +150,16 @@ const createOrder = async () => {
   loading.value = true;
 
   try {
-    await $fetch('/api/orders', {
+    const { message } = await $fetch<{ message: string }>('/api/orders', {
       method: 'POST',
       headers: {
         'csrf-token': csrf,
       },
+    });
+
+    toast.success({
+      title: 'Success!',
+      message,
     });
 
     await navigateTo('/orders');

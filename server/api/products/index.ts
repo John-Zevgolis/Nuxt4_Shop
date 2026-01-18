@@ -1,10 +1,13 @@
-import { Product } from '@prisma/client';
+import { desc, eq, InferSelectModel, count } from 'drizzle-orm';
+import { products } from '~~/db/schema';
+
+type Product = InferSelectModel<typeof products>;
 
 export default defineEventHandler(
   async (
-    event
+    event,
   ): Promise<{
-    products: Product[];
+    productsArr: Product[];
     totalPages: number;
     currentPage: number;
   }> => {
@@ -14,26 +17,24 @@ export default defineEventHandler(
     const pageSize = 6;
 
     try {
-      const [products, totalCount] = await Promise.all([
-        prisma.product.findMany({
-          skip: (currentPage - 1) * pageSize,
-          take: pageSize,
-          where: {
-            isDeleted: false,
-          },
-          orderBy: {
-            id: 'desc',
-          },
-        }),
-        prisma.product.count({
-          where: {
-            isDeleted: false,
-          },
-        }),
+      const [productsResult, countResult] = await Promise.all([
+        db
+          .select()
+          .from(products)
+          .where(eq(products.isDeleted, false))
+          .orderBy(desc(products.id))
+          .limit(pageSize)
+          .offset((currentPage - 1) * pageSize),
+        db
+          .select({ value: count() })
+          .from(products)
+          .where(eq(products.isDeleted, false)),
       ]);
 
+      const totalCount = countResult[0]?.value || 0;
+
       return {
-        products,
+        productsResult,
         totalPages: Math.ceil(totalCount / pageSize),
         currentPage,
       };
@@ -43,5 +44,5 @@ export default defineEventHandler(
         statusMessage: error.message,
       });
     }
-  }
+  },
 );

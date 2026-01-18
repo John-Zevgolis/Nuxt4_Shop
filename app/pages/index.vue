@@ -1,10 +1,12 @@
 <template>
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 py-10">
     <div v-if="pending">Loading...</div>
-    <div v-else-if="data && data.products && data.products.length > 0">
+    <div
+      v-else-if="data && data.productsResult && data.productsResult.length > 0"
+    >
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="product in data.products"
+          v-for="product in data.productsResult"
           :key="product.id"
           class="bg-neutral-primary-soft block border border-default rounded-base shadow-xs"
         >
@@ -28,7 +30,7 @@
             <h4
               class="mt-6 mb-2 text-xl font-semibold tracking-tight text-heading"
             >
-              {{ product.price }}
+              {{ formatPrice(product.price) }}
             </h4>
             <p class="mb-6 text-body">
               {{ product.description }}
@@ -166,7 +168,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@prisma/client';
+import type { Product } from '~/types/product';
 
 const { csrf } = useCsrf();
 
@@ -179,7 +181,7 @@ const toast = useToast();
 const page = ref(1);
 
 const { data, error, pending } = await useFetch<{
-  products: Product[];
+  productsResult: Product[];
   totalPages: number;
   currentPage: number;
 }>('/api/products', {
@@ -202,7 +204,7 @@ const addToCart = async (productId: number) => {
   loading.value = true;
 
   try {
-    await $fetch('/api/cart', {
+    const { message } = await $fetch<{ message: string }>('/api/cart', {
       method: 'POST',
       body: {
         productId,
@@ -210,6 +212,11 @@ const addToCart = async (productId: number) => {
       headers: {
         'csrf-token': csrf,
       },
+    });
+
+    toast.success({
+      title: 'Success!',
+      message,
     });
 
     await navigateTo('/cart');
