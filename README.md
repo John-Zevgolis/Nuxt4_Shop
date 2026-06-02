@@ -1,75 +1,150 @@
-# Nuxt Minimal Starter
+# 🛍️ Nuxt4 Shop
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Modern E-Commerce application built with **Nuxt 4**, **Vue 3**, **TypeScript**, and modern web development best practices.
 
-## Setup
+![Nuxt](https://img.shields.io/badge/Nuxt-4-00DC82?style=for-the-badge&logo=nuxtdotjs)
+![Vue](https://img.shields.io/badge/Vue-3-42B883?style=for-the-badge&logo=vuedotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-Make sure to install dependencies:
+---
+
+## ✨ Features
+
+- 🛒 Product Catalog
+- 🔍 Product Search & Filtering
+- ❤️ Wishlist Support
+- 🛍️ Shopping Cart
+- 📱 Fully Responsive Design
+- ⚡ Server-Side Rendering (SSR)
+- 🔥 Optimized Performance
+- 🎨 Modern UI / UX
+- 🌙 Dark Mode Ready
+- 🔐 Authentication Ready
+- 📦 Scalable Architecture
+
+---
+
+## 🚀 Tech Stack
+
+| Technology | Purpose |
+|------------|----------|
+| Nuxt 4 | Full-Stack Framework |
+| Vue 3 | Frontend Framework |
+| TypeScript | Type Safety |
+| Pinia | State Management |
+| Tailwind CSS | Styling |
+| Nitro | Backend Engine |
+| VueUse | Utility Composables |
+
+---
+
+## 📂 Project Structure
 
 ```bash
-# npm
+Nuxt4_Shop/
+│
+├── assets/
+├── components/
+├── composables/
+├── layouts/
+├── pages/
+├── plugins/
+├── public/
+├── server/
+├── stores/
+├── types/
+├── utils/
+│
+├── app.vue
+├── nuxt.config.ts
+├── package.json
+└── README.md
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/John-Zevgolis/Nuxt4_Shop.git
+```
+
+Navigate into the project:
+
+```bash
+cd Nuxt4_Shop
+```
+
+Install dependencies:
+
+```bash
 npm install
+```
 
-# pnpm
+or
+
+```bash
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+---
 
-Start the development server on `http://localhost:3000`:
+## 🖥️ Development
+
+Run the development server:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+Application will be available at:
 
 ```bash
-# npm
+http://localhost:3000
+```
+
+---
+
+## 📦 Production Build
+
+Build for production:
+
+```bash
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
+
+## 🌍 Environment Variables
+
+Create a `.env` file in the root directory.
+
+Example:
+
+```env
+API_BASE_URL=https://api.example.com
+JWT_SECRET=your_secret_key
+```
+
+---
+
+## 👨‍💻 Author
+
+**John Zevgolis**
+
+GitHub: https://github.com/John-Zevgolis
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
